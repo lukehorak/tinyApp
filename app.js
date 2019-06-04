@@ -1,10 +1,11 @@
-var express = require("express");
-var app = express();
-var PORT = 3080;
+const express = require("express");
+
+const app = express();
+const PORT = 3080;
 
 app.set("view engine", "ejs");
 
-var urlDatabase = {
+let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
