@@ -1,8 +1,11 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const appTools = require("./tinyAppTools");
 
 const app = express();
 const PORT = 3080;
 
+app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -43,6 +46,11 @@ app.get("/urls.json", (req, res) => {
 ////////////////////
 // POST
 ////////////////////
+
+app.post("/urls", (req,res) => {
+  console.log(req.body);
+  res.send("Ok")
+})
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Listen
