@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>TinyApp</title>
+</head>
+<body style="font-size:20px; padding:50px; background-color:#8d96a3">
+    <!-- Add EJS code here -->
+    <table class="table">
+      <th scope="col">URL</th>
+      <th scope="col">Shortened!</th>
+        <tr>
+          <td>
+            <%= long %>
+          </td>
+          <td>
+            <a href='#'><%=short %></a>
+          </td>
+        </tr>
+    </table>
+</body>
+</html>
