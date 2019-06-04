@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <% include ./partials/_head %>
 </head>
+
 <body style="font-size:20px; padding:50px; background-color:#8d96a3">
-    <!-- Add EJS code here -->
-    <% include ./partials/_header %>
-    <table class="table">
-      <th scope="col">URL</th>
-      <th scope="col">Shorten it!</th>
-        <% for (url in urls) { %>
-        <tr>
-          <td>
-            <%= urls[url] %>
-          </td>
-          <td>
-            <a href='#'><%=url %></a>
-          </td>
-        </tr>
-        <% }; %>
-    </table>
+  <!-- Add EJS code here -->
+  <% include ./partials/_header %>
+  <table class="table table-bordered table-hover">
+    <th scope="col">URL</th>
+    <th scope="col">ShortURL</th>
+    <th scope="col">Delete</th>
+    <% for (url in urls) { %>
+    <tr>
+      <td>
+        <a href=<%= urls[url] %>><%= urls[url] %></a>
+      </td>
+      <td>
+        <a href=<%=`../u/${url}`%>><%=url %></a>
+      </td>
+      <td>
+        <form method="POST" action=<%=`/urls/${url}/delete`%>>
+          <button type="submit" class="btn btn-danger">X</button>
+        </form>
+      </td>
+    </tr>
+    <% }; %>
+  </table>
 </body>
+
 </html>
