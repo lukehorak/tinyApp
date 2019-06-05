@@ -1,11 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const appTools = require("./tinyAppTools");
 
 const app = express();
 const PORT = 3080;
 
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser())
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -25,7 +27,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase}
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  }
   res.render("urls_index", templateVars);
 });
 
@@ -34,7 +39,12 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { short: req.params.shortURL, long: urlDatabase[req.params.shortURL], fullTiny: `http://${req.hostname}/u/${req.params.shortURL}`};
+  let templateVars = {
+    short: req.params.shortURL,
+    long: urlDatabase[req.params.shortURL],
+    fullTiny: `http://${req.hostname}/u/${req.params.shortURL}`,
+    username: req.cookies["username"]
+  };
   res.render("urls_show", templateVars)
 });
 
@@ -67,9 +77,19 @@ app.post("/urls/:shortURL/delete", (req,res) => {
 app.post("/urls/:shortURL", (req,res) => {
   const re = ('^http[s]?://');
   let long = req.body.longURL;
-  long = (long.search(re) > -1 ? long : `https://${long}`)
+  long = (long.search(re) > -1 ? long : `http://${long}`)
   urlDatabase[req.params.shortURL] = long;
   res.redirect(`/urls/${req.params.shortURL}`)
+})
+
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect('/urls');
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect('/urls');
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
