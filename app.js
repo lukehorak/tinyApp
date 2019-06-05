@@ -1,3 +1,5 @@
+// TODO - Create a Login Page (User Registration)
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -10,10 +12,18 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser())
 app.set("view engine", "ejs");
 
-let urlDatabase = {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+const users = {
+  "test": {
+    id: "test",
+    email: "user@farts.com",
+    password: "!u@fdc"
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Routes
@@ -27,23 +37,29 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const user_id = req.cookies['user_id'];
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[user_id]
   }
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new")
+  const user_id = req.cookies['user_id'];
+  let templateVars = {
+    user: users[user_id]
+  }
+  res.render("urls_new", templateVars)
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  const user_id = req.cookies['user_id'];
   let templateVars = {
     short: req.params.shortURL,
     long: urlDatabase[req.params.shortURL],
     fullTiny: `http://${req.hostname}/u/${req.params.shortURL}`,
-    username: req.cookies["username"]
+    user: users[user_id]
   };
   res.render("urls_show", templateVars)
 });
@@ -57,15 +73,17 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 })
 
+app.get("/register", (req, res) => {
+  res.render("_register")
+})
 
 ////////////////////
 // POST
 ////////////////////
 
 app.post("/urls", (req,res) => {
-  let short = appTools.generateRandomString(6);
+  let short = appTools.generateUniqueId(urlDatabase,6);
   urlDatabase[short] = req.body.longURL;
-  console.log(urlDatabase);
   res.redirect(`/urls/${short}`)
 })
 
@@ -79,7 +97,7 @@ app.post("/urls/:shortURL", (req,res) => {
   let long = req.body.longURL;
   long = (long.search(re) > -1 ? long : `http://${long}`)
   urlDatabase[req.params.shortURL] = long;
-  res.redirect(`/urls/${req.params.shortURL}`)
+  res.redirect('/urls')
 })
 
 app.post("/login", (req, res) => {
@@ -90,6 +108,21 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect('/urls');
+})
+
+app.post("/register", (req, res) => {
+  if (!req.body.email || !req.body.password || appTools.propertyIsTaken("email", users, req.body.email)){
+    res.sendStatus(400);
+  }
+  const id = appTools.generateUniqueId(users, 8)
+  users[id] = {
+    id: id,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie("user_id", id);
+  res.redirect("/urls");
+ 
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
