@@ -8,9 +8,15 @@
 <body style="font-size:20px; padding:50px; background-color:#BEB7A4">
   <!-- Add EJS code here -->
   <% include ./partials/_header %>
+  <div style="text-align:center; width:40%; margin-left:auto; margin-right:auto; margin-bottom:1em padding 0.5em" class="table table-bordered">
+    <h3>
+      <a href="./urls/new">Create New TinyURL</a>
+    </h3>
+  </div>
   <table class="table table-bordered table-hover">
     <th scope="col">URL</th>
     <th scope="col">ShortURL</th>
+    <th scope="col">Edit this URL</th>
     <th scope="col">Delete</th>
     <% for (url in urls) { %>
     <tr>
@@ -19,6 +25,9 @@
       </td>
       <td>
         <a href=<%=`../u/${url}`%>><%=url %></a>
+      </td>
+      <td>
+        <a href=<%=`./urls/${url}`%>>Edit</a>
       </td>
       <td>
         <form method="POST" action=<%=`/urls/${url}/delete`%>>
