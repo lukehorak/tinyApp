@@ -1,24 +1,12 @@
 <div style="text-align:center">
   <h1>TinyApp</h1>
-  <h3>
-    <a href="./urls/new">Create New TinyURL</a>
-  </h3>
-  <% if(!username) {%>
-    <form class="form" method="POST" action="/login">
-      <div class="form-group mb-2">
-        <label for="username">Username:
-          
-          <input class="form-control" type="text" name="username" placeholder="Pick something cool"
-            style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Log In</button>
-        </label>
-      </div>
-    </form>
+  <% if(!user) {%>
+    <h3 style="color:orangered">You're not logged in!</h3>
   <% } else{ %>
+    <span>Logged in as <span style="color:#FF7F11; font-style:italic; font-weight:bold"><%=user.email%></span></span>
     <form class="form" method="POST" action="/logout">
       <div class="form-group mb-2">
-        <label for="username">
-          <span>Logged in as <span style="color:#FF7F11; font-style:italic; font-weight:bold"><%=username%></span></span>
+        <label for="email">
           <button type="submit" class="btn btn-primary">Log Out</button>
         </label>
       </div>
