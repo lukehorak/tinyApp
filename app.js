@@ -64,9 +64,12 @@ app.post("/urls/:shortURL/delete", (req,res) => {
   res.redirect('/urls')
 })
 
-app.post("/urls/:id", (req,res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
-  res.redirect(`/urls/${req.params.id}`)
+app.post("/urls/:shortURL", (req,res) => {
+  const re = ('^http[s]?://');
+  let long = req.body.longURL;
+  long = (long.search(re) > -1 ? long : `https://${long}`)
+  urlDatabase[req.params.shortURL] = long;
+  res.redirect(`/urls/${req.params.shortURL}`)
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
