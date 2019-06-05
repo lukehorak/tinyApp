@@ -6,16 +6,17 @@
   <% include ./partials/_head %>
 </head>
 
-<body style="font-size:20px; padding:50px; background-color:#8d96a3">
+<body style="font-size:20px; padding:50px; background-color:#BEB7A4">
   <!-- Add EJS code here -->
-  <h1 style="text-align:center">ShortURL: <%=short%></h1>
+  <% include ./partials/_header %>
+  <h2 style="text-align:center">ShortURL: <%=short%></h2>
   <table class="table table-bordered table-hover">
     <tr>
       <td>
         <a href=<%= long %>><%= long %></a>
       </td>
       <td>
-        <a href=<%`../u/${short}`%>><%=fullTiny%></a>
+        <a href=../<%short%>><%=fullTiny%></a>
       </td>
     </tr>
   </table>
