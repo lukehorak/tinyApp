@@ -1,17 +1,26 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const path = require('path');
+//const path = require('path');
+const dotenv = require('dotenv');
 // vv To be used later vv
 //const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Configs
+///////////////////////////////////////////////////////////////////////////////////////////////////
 const app = express();
 const PORT = 3080;
 
+// Configure env variables
+const dotenvConfig = dotenv.config();
+if (dotenvConfig.error){
+  throw dotenvConfig.error
+}
+
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIESALT))
 app.set("view engine", "ejs");
 app.use("/", express.static('assets'));
 
@@ -21,10 +30,10 @@ const urlDatabase = {
 };
 
 const users = {
-  "test": {
+  "v4b3": {
     id: "test",
     email: "user@totallyrealemail.com",
-    password: "!u@fdc"
+    password: "shittypassword"
   }
 }
 
@@ -40,7 +49,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const user_id = req.cookies['user_id'];
+  const user_id = req.signedCookies['user_id'];
   let templateVars = {
     urls: urlDatabase,
     user: users[user_id]
@@ -49,7 +58,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const user_id = req.cookies['user_id'];
+  const user_id = req.signedCookies['user_id'];
   let templateVars = {
     user: users[user_id]
   }
@@ -57,7 +66,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user_id = req.cookies['user_id'];
+  const user_id = req.signedCookies['user_id'];
   let templateVars = {
     short: req.params.shortURL,
     long: urlDatabase[req.params.shortURL],
@@ -113,7 +122,7 @@ app.post("/login", (req, res) => {
   if(!userId ||users[userId].password !== password){
     res.sendStatus(403);
   }
-  res.cookie("user_id", userId);
+  res.cookie("user_id", userId, { signed: true });
   res.redirect('/urls');
 })
 
@@ -133,7 +142,7 @@ app.post("/register", (req, res) => {
     email: email,
     password: password
   }
-  res.cookie("user_id", id);
+  res.cookie("user_id", id, { signed: true });
   res.redirect("/urls");
  
 })
