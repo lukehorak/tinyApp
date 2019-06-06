@@ -26,5 +26,14 @@ module.exports = {
       }
     }
     return undefined;
+  },
+  urlsForUser: function(resource, id){
+    const urls = {}
+    for(let i in resource){
+      if (resource[i].userID === id){
+        urls[i] = resource[i].longURL;
+      }
+    }
+    return (urls === {} > 0 ? undefined : urls)
   }
 }
