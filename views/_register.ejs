@@ -7,17 +7,21 @@
 
 <body style="font-size:20px; padding:50px; background-color:#BEB7A4">
   <h2 style="text-align:center; font-weight:bold"><i style="color:#5cb85c" class="fa fa-user-plus"></i> Register</h2>
-  <div >
+  <div style="width:50%; margin:1em auto;">
     <form class="form" action="/register" method="POST">
-      <div style="width:50%; margin:auto;" class="form-group mb-2">
-        <label style="width:75%; margin:auto; padding:0.2em" for="email">Username (Email):</label>
-        <input class="form-control" type="email" name="email" placeholder="A cool username" style="width: 75%; margin: auto">
-        <label style="width:75%; margin:auto; padding:0.2em" for="password">Password:</label>
-        <input class="form-control" type="password" name="password" placeholder="Please don't pick 'password'" style="width: 75%; margin: auto">
-        <button style="margin: 1em; auto;" type="submit" class="btn btn-primary">Register</button>
+      <div class="form-group mb-2">
+        <label for="email">Username (Email):</label>
+        <input class="form-control" type="email" name="email" placeholder="you@youremail.com"
+          style="width: 300px; margin-top: 0.5em; margin-bottom: 0.5em">
+        <label for="password">Password:</label>
+        <input class="form-control" type="password" name="password" placeholder="Password"
+          style="width: 300px; margin-top: 0.5em; margin-bottom: 0.5em">
+        <button type="submit" class="btn btn-primary">Register</button>
       </div>
     </form>
+    <p style="font-size:0.5em; text-align:center">Already have an account? <a href="/login">Log in here!</a></p>
   </div>
+
 </body>
 
 </html>

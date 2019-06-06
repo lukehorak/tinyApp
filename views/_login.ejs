@@ -6,17 +6,20 @@
 </head>
 
 <body style="font-size:20px; padding:50px; background-color:#BEB7A4">
-  <h2 style="text-align:center; font-weight:bold">Log In</h2>
-  <div style="width:50%; margin:auto;">
+  <h2 style="text-align:center; font-weight:bold"><i style="color:#007bff" class="fa fa-user"></i> Log In</h2>
+  <div style="width:50%; margin:1em auto;">
     <form class="form" action="/login" method="POST">
       <div class="form-group mb-2">
         <label for="email">Username (Email):</label>
-        <input class="form-control" type="email" name="email" placeholder="you@youremail.com" style="width: 300px; margin: 1em">
+        <input class="form-control" type="email" name="email" placeholder="you@youremail.com"
+          style="width: 300px; margin-top: 0.5em; margin-bottom: 0.5em">
         <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" placeholder="Password" style="width: 300px; margin: 1em">
+        <input class="form-control" type="password" name="password" placeholder="Password"
+          style="width: 300px; margin-top: 0.5em; margin-bottom: 0.5em">
         <button type="submit" class="btn btn-primary">Log In</button>
       </div>
     </form>
+    <p style="font-size:0.5em; text-align:center">Don't have an account? <a href="/register">Register here!</a></p>
   </div>
 </body>
 
