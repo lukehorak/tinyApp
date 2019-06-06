@@ -25,8 +25,8 @@ app.set("view engine", "ejs");
 app.use("/", express.static('assets'));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "v4b3"},
+  "9sm5xK": {longURL: "http://www.google.com", userID: "v4b3"}
 };
 
 const users = {
@@ -50,9 +50,11 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const user_id = req.signedCookies['user_id'];
+  const userURLs = appTools.urlsForUser(urlDatabase, user_id)
   let templateVars = {
-    urls: urlDatabase,
-    user: users[user_id]
+    urls: userURLs,
+    user: users[user_id],
+    hostURL: `http://${req.hostname}/u/`
   }
   res.render("urls_index", templateVars);
 });
@@ -62,16 +64,19 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     user: users[user_id]
   }
-  res.render("urls_new", templateVars)
+  users[user_id] ? res.render("urls_new", templateVars) : res.redirect("/login");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const user_id = req.signedCookies['user_id'];
+  const urlObj = urlDatabase[req.params.shortURL];
+  const validURL = (user_id === urlObj.userID)
   let templateVars = {
     short: req.params.shortURL,
-    long: urlDatabase[req.params.shortURL],
+    long: urlDatabase[req.params.shortURL].longURL,
     fullTiny: `http://${req.hostname}/u/${req.params.shortURL}`,
-    user: users[user_id]
+    user: users[user_id],
+    valid: validURL
   };
   res.render("urls_show", templateVars)
 });
@@ -112,7 +117,7 @@ app.post("/urls/:shortURL", (req,res) => {
   const re = ('^http[s]?://');
   let long = req.body.longURL;
   long = (long.search(re) > -1 ? long : `http://${long}`)
-  urlDatabase[req.params.shortURL] = long;
+  urlDatabase[req.params.shortURL] = {longURL: long, userID:req.signedCookies["user_id"]};
   res.redirect('/urls')
 })
 
