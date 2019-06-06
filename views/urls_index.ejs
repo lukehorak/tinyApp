@@ -18,10 +18,10 @@
         <a href=<%= urls[url] %>><%= urls[url] %></a>
       </td>
       <td>
-        <a href=<%=`../u/${url}`%>><%=url %></a>
+        <a href=<%=`../u/${url}`%>><%=hostURL + url %></a>
       </td>
       <td style="text-align:center">
-        <a class="btn btn-secondary" href=<%=`./urls/${url}`%>>Edit</a>
+        <a class="btn btn-secondary" href=<%=`/urls/${url}`%>>Edit</a>
       </td>
       <td style="text-align:center">
         <form method="POST" action=<%=`/urls/${url}/delete`%>>
