@@ -1,5 +1,3 @@
-// TODO - Create a Login Page (User Registration)
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
