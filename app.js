@@ -3,7 +3,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+// vv To be used later vv
+//const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
+
 
 const app = express();
 const PORT = 3080;
@@ -20,7 +23,7 @@ const urlDatabase = {
 const users = {
   "test": {
     id: "test",
-    email: "user@farts.com",
+    email: "user@totallyrealemail.com",
     password: "!u@fdc"
   }
 }
@@ -77,6 +80,10 @@ app.get("/register", (req, res) => {
   res.render("_register")
 })
 
+app.get("/login", (req, res) => {
+  res.render("_login")
+})
+
 ////////////////////
 // POST
 ////////////////////
@@ -101,24 +108,30 @@ app.post("/urls/:shortURL", (req,res) => {
 })
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  const { email, password } = req.body;
+  const userId = appTools.propertyTakenBy("email", users, email);
+  if(!userId ||users[userId].password !== password){
+    res.sendStatus(403);
+  }
+  res.cookie("user_id", userId);
   res.redirect('/urls');
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect('/urls');
 })
 
 app.post("/register", (req, res) => {
-  if (!req.body.email || !req.body.password || appTools.propertyIsTaken("email", users, req.body.email)){
+  const { email, password } = req.body;
+  if (!email || !password || appTools.propertyTakenBy("email", users, email)){
     res.sendStatus(400);
   }
   const id = appTools.generateUniqueId(users, 8)
   users[id] = {
     id: id,
-    email: req.body.email,
-    password: req.body.password
+    email: email,
+    password: password
   }
   res.cookie("user_id", id);
   res.redirect("/urls");
