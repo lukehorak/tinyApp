@@ -20,9 +20,9 @@ module.exports = {
     return id;
   },
   propertyTakenBy: function(propName, resource, property){
-    for(let i in resource){
-      if (resource[i][propName] === property){
-        return resource[i].id;
+    for(let id in resource){
+      if (resource[id][propName] === property){
+        return id;
       }
     }
     return undefined;
