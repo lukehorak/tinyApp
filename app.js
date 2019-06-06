@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cookieSession = require("cookie-session")
 const dotenv = require('dotenv');
-// vv To be used later vv
 const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
 
@@ -19,7 +19,11 @@ if (dotenvConfig.error){
 }
 
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cookieParser(process.env.COOKIESALT))
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.COOKIESALT],
+  maxAge: 24 * 60 * 60 * 1000
+}))
 app.set("view engine", "ejs");
 app.use("/", express.static('assets'));
 
@@ -48,7 +52,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const user_id = req.signedCookies['user_id'];
+  const user_id = req.session.user_id;
   const userURLs = appTools.urlsForUser(urlDatabase, user_id)
   let templateVars = {
     urls: userURLs,
@@ -59,7 +63,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const user_id = req.signedCookies['user_id'];
+  const user_id = req.session.user_id;
   let templateVars = {
     user: users[user_id]
   }
@@ -67,7 +71,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user_id = req.signedCookies['user_id'];
+  const user_id = req.session.user_id;
   const urlObj = urlDatabase[req.params.shortURL];
   const validURL = (user_id === urlObj.userID)
   let templateVars = {
@@ -121,7 +125,7 @@ app.post("/urls/:shortURL", (req,res) => {
     const re = ('^http[s]?://');
     let long = req.body.longURL;
     long = (long.search(re) > -1 ? long : `http://${long}`)
-    urlDatabase[shortURL] = {longURL: long, userID:req.signedCookies["user_id"]};
+    urlDatabase[shortURL] = { longURL: long, userID: req.session.user_id }
     res.redirect('/urls')
   }
   res.sendStatus(401)
@@ -130,16 +134,15 @@ app.post("/urls/:shortURL", (req,res) => {
 app.post("/login", (req, res) => {
   const{ email, password } = req.body;
   const userId = appTools.propertyTakenBy("email", users, email);
-  //console.log(password, '\n', )
   if(!userId || !bcrypt.compareSync(password, users[userId].password)){
     res.sendStatus(403);
   }
-  res.cookie("user_id", userId, { signed: true });
+  req.session["user_id"] = userId
   res.redirect('/urls');
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect('/urls');
 })
 
@@ -154,7 +157,7 @@ app.post("/register", (req, res) => {
     email: email,
     password: bcrypt.hashSync(password, 10)
   }
-  res.cookie("user_id", id, { signed: true });
+  req.session["user_id"] = id;
   res.redirect("/urls");
  
 })
