@@ -9,25 +9,33 @@
 <body style="font-size:20px; padding:50px; background-color:#BEB7A4">
   <!-- Add EJS code here -->
   <% include ./partials/_header %>
-  <h2 style="text-align:center">ShortURL: <%=short%></h2>
-  <table class="table table-bordered table-hover">
-    <tr>
-      <td>
-        <a href=<%= long %>><%= long %></a>
-      </td>
-      <td>
-        <a href=../<%short%>><%=fullTiny%></a>
-      </td>
-    </tr>
-  </table>
+  <% if(valid){%>
+    <h2 style="text-align:center">ShortURL: <%=short%></h2>
+    <table class="table table-bordered table-hover">
+      <tr>
+        <td>
+          <a href=<%= long %>><%= long %></a>
+        </td>
+        <td>
+          <a href=../<%short%>><%=fullTiny%></a>
+        </td>
+      </tr>
+    </table>
 
-  <form class="form-inline" method="POST" action=<%=`/urls/${short}`%>>
-    <div class="form-group mb-2">
-      <label for="longURL">Modify the URL:</label>
-      <input class="form-control" type="text" value=<%=long%> name="longURL" placeholder="http://something.com" style="width: 300px; margin: 1em">
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-  </form>
+    <form class="form-inline" method="POST" action=<%=`/urls/${short}`%>>
+      <div class="form-group mb-2">
+        <label for="longURL">Modify the URL:</label>
+        <input class="form-control" type="text" value=<%=long%> name="longURL" placeholder="http://something.com" style="width: 300px; margin: 1em">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+    <%} else {%>
+      <div style="margin:auto; text-align:center">
+        <h3>Oops!</h3>
+        <p>Looks like you dont own this tiny<sup>URL</sup></p>
+        <p style="font-size:small">Users can only view or edit their own tiny<sup>URL</sup>s.<br>Please log in or register using the links above to view your tiny<sup>URL</sup>s</p>
+      </div>
+    <% } %>
 </body>
 
 </html>
