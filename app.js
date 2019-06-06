@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const path = require('path');
 // vv To be used later vv
 //const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
@@ -12,6 +13,7 @@ const PORT = 3080;
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser())
 app.set("view engine", "ejs");
+app.use("/", express.static('assets'));
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
