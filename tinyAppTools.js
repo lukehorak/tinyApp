@@ -19,12 +19,12 @@ module.exports = {
     while (this.idExists(resource, id));
     return id;
   },
-  propertyIsTaken: function(property, resource, newProp){
+  propertyTakenBy: function(propName, resource, property){
     for(let i in resource){
-      if (resource[i][property] === newProp){
-        return true;
+      if (resource[i][propName] === property){
+        return resource[i].id;
       }
     }
-    return false;
+    return undefined;
   }
 }
