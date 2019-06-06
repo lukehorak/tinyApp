@@ -1,10 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-//const path = require('path');
 const dotenv = require('dotenv');
 // vv To be used later vv
-//const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ const users = {
   "v4b3": {
     id: "test",
     email: "user@totallyrealemail.com",
-    password: "shittypassword"
+    password: "$2b$10$CwpiZMMvozyMQWRksvPZrOdn.d5mhi/dhjYSbuFbZxx47z7m43dE6"
   }
 }
 
@@ -129,9 +128,10 @@ app.post("/urls/:shortURL", (req,res) => {
 })
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const{ email, password } = req.body;
   const userId = appTools.propertyTakenBy("email", users, email);
-  if(!userId ||users[userId].password !== password){
+  //console.log(password, '\n', )
+  if(!userId || !bcrypt.compareSync(password, users[userId].password)){
     res.sendStatus(403);
   }
   res.cookie("user_id", userId, { signed: true });
@@ -152,7 +152,7 @@ app.post("/register", (req, res) => {
   users[id] = {
     id: id,
     email: email,
-    password: password
+    password: bcrypt.hashSync(password, 10)
   }
   res.cookie("user_id", id, { signed: true });
   res.redirect("/urls");
