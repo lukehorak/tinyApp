@@ -6,14 +6,12 @@
 <body style="font-size:20px; padding:50px; background-color:#BEB7A4">
   <!-- Add EJS code here -->
   <% include ./partials/_header %>
-  <div style="display:block; margin:auto; text-align:center">
-    <a style="margin:0.5em" class="btn btn-success" aria-pressed="true" href="./urls/new"> Create New TinyURL!</a>
-  </div>
+  
   <table class="table table-bordered table-hover">
-    <th scope="col">URL</th>
-    <th scope="col">ShortURL</th>
-    <th scope="col">Edit this URL</th>
-    <th scope="col">Delete</th>
+    <th style="text-align:center" scope="col">URL</th>
+    <th style="text-align:center" scope="col">ShortURL</th>
+    <th style="text-align:center" scope="col">Edit</th>
+    <th style="text-align:center" scope="col">Delete</th>
     <% for (url in urls) { %>
     <tr>
       <td>
@@ -22,10 +20,10 @@
       <td>
         <a href=<%=`../u/${url}`%>><%=url %></a>
       </td>
-      <td>
+      <td style="text-align:center">
         <a class="btn btn-secondary" href=<%=`./urls/${url}`%>>Edit</a>
       </td>
-      <td>
+      <td style="text-align:center">
         <form method="POST" action=<%=`/urls/${url}/delete`%>>
           <button type="submit" class="btn btn-danger">X</button>
         </form>

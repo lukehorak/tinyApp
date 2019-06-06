@@ -1,15 +1,16 @@
 <div style="text-align:center">
-  <h1 style="font-weight:bold">TinyApp</h1>
+  <h1 style="font-weight:bold">Tiny<sup><sup style="font-size:large">App</sup></sup></h1>
   <% if(!user) {%>
     <h3 style="color:orangered">You're not logged in!</h3>
     <p><a href="/login">Log In</a> or <a href="/register">Register</a> for a free account</p>
   <% } else{ %>
-    <span>Logged in as <span style="color:#FF7F11; font-style:italic; font-weight:bold"><%=user.email%></span></span>
+    <p style="font-size:0.7em;">
+      <span style="color:#4ba76b; font-weight:bold">Logged in</span> as:<br><span style="color:#FF7F11; font-style:italic; font-weight:bold"><%=user.email%></span>
+    </p>
     <form class="form" method="POST" action="/logout">
       <div class="form-group mb-2">
-        <label for="email">
-          <button type="submit" class="btn btn-primary">Log Out</button>
-        </label>
+        <button type="submit" class="btn btn-sm btn-danger">Log Out</button>
+        <a style="margin:0.5em" class="btn btn-sm btn-success" aria-pressed="true" href="/urls/new">New TinyURL</a>
       </div>
     </form>
   <% } %>
