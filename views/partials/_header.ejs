@@ -2,6 +2,7 @@
   <h1>TinyApp</h1>
   <% if(!user) {%>
     <h3 style="color:orangered">You're not logged in!</h3>
+    <p><a href="/login">Log In</a> or <a href="/register">Register</a> for a free account</p>
   <% } else{ %>
     <span>Logged in as <span style="color:#FF7F11; font-style:italic; font-weight:bold"><%=user.email%></span></span>
     <form class="form" method="POST" action="/logout">
