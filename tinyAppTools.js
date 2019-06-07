@@ -37,9 +37,13 @@ module.exports = {
     return (urls === {} > 0 ? undefined : urls)
   },
   validateUser: function(request, resource){
-    const user_id = request.signedCookies['user_id'];
+    const user_id = request.session.user_id;
     const shortURL = request.params.shortURL;
     // Validation
     return (user_id === resource[shortURL].userID)
+  },
+  confirmHTTPS: function(url){
+    const re = ('^http[s]?://');
+    return (url.search(re) > -1 ? url : `http://${url}`);
   }
 }
