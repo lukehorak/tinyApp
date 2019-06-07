@@ -67,7 +67,7 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     user: users[user_id]
   }
-  users[user_id] ? res.render("urls_new", templateVars) : res.redirect("/login");
+  users[user_id] ? res.render("urls_new", templateVars) : res.render("register", {error: "You must have an account to register a URL. Sign up today!"});
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -113,11 +113,13 @@ app.get("/u/:shortURL", (req, res) => {
 })
 
 app.get("/register", (req, res) => {
-  res.render("_register")
+  const templateVars = { error: undefined }
+  res.render("register", templateVars)
 })
 
 app.get("/login", (req, res) => {
-  res.render("_login")
+  const templateVars = { error: undefined }
+  res.render("login", templateVars)
 })
 
 ////////////////////
@@ -135,7 +137,7 @@ app.post("/login", (req, res) => {
   const{ email, password } = req.body;
   const userId = appTools.propertyTakenBy("email", users, email);
   if(!userId || !bcrypt.compareSync(password, users[userId].password)){
-    res.sendStatus(403);
+    res.status(403).render("login", {error: "Invalid username or password, please try again!"});
   }
   req.session["user_id"] = userId
   res.redirect('/');
@@ -149,7 +151,7 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password || appTools.propertyTakenBy("email", users, email)){
-    res.sendStatus(400);
+    res.status(400).render("register", { error: "That email is already associated with an account. Try another one!" });
   }
   const id = appTools.generateUniqueId(users, 8)
   users[id] = {
