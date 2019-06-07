@@ -25,7 +25,7 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }))
 app.set("view engine", "ejs");
-app.use("/", express.static('assets'));
+app.use(express.static('public'));
 
 const urlDatabase = {
   "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "v4b3"},
@@ -47,11 +47,8 @@ const users = {
 ////////////////////
 // GET
 ////////////////////
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
 
-app.get("/urls", (req, res) => {
+app.get("/", (req, res) => {
   const user_id = req.session.user_id;
   const userURLs = appTools.urlsForUser(urlDatabase, user_id)
   let templateVars = {
@@ -77,7 +74,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     short: req.params.shortURL,
     long: urlDatabase[req.params.shortURL].longURL,
-    fullTiny: `http://${req.hostname}/u/${req.params.shortURL}`,
+    hostURL: `http://${req.hostname}/u/`,
     user: users[user_id],
     valid: validURL
   };
@@ -106,15 +103,16 @@ app.get("/login", (req, res) => {
 ////////////////////
 
 app.post("/urls", (req,res) => {
-  let short = appTools.generateUniqueId(urlDatabase,6);
-  urlDatabase[short] = req.body.longURL;
+  const short = appTools.generateUniqueId(urlDatabase,6);
+  const long = appTools.confirmHTTPS(req.body.longURL);
+  urlDatabase[short] = { longURL: long, userID: req.session.user_id };
   res.redirect(`/urls/${short}`)
 })
 
 app.post("/urls/:shortURL/delete", (req,res) => {
   if (appTools.validateUser(req, urlDatabase)){
     delete urlDatabase[req.params.shortURL];
-    res.redirect('/urls')
+    res.redirect('/')
   }
   res.sendStatus(401);
   
@@ -122,11 +120,12 @@ app.post("/urls/:shortURL/delete", (req,res) => {
 
 app.post("/urls/:shortURL", (req,res) => {
   if (appTools.validateUser(req, urlDatabase)){
-    const re = ('^http[s]?://');
-    let long = req.body.longURL;
-    long = (long.search(re) > -1 ? long : `http://${long}`)
-    urlDatabase[shortURL] = { longURL: long, userID: req.session.user_id }
-    res.redirect('/urls')
+    // const re = ('^http[s]?://');
+    // let long = req.body.longURL;
+    // long = (long.search(re) > -1 ? long : `http://${long}`);
+    const long = appTools.confirmHTTPS(req.body.longURL)
+    urlDatabase[req.params.shortURL] = { longURL: long, userID: req.session.user_id }
+    res.redirect('/')
   }
   res.sendStatus(401)
 })
@@ -138,12 +137,12 @@ app.post("/login", (req, res) => {
     res.sendStatus(403);
   }
   req.session["user_id"] = userId
-  res.redirect('/urls');
+  res.redirect('/');
 })
 
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect('/urls');
+  res.redirect('/');
 })
 
 app.post("/register", (req, res) => {
@@ -158,7 +157,7 @@ app.post("/register", (req, res) => {
     password: bcrypt.hashSync(password, 10)
   }
   req.session["user_id"] = id;
-  res.redirect("/urls");
+  res.redirect("/");
  
 })
 
