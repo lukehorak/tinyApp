@@ -2,6 +2,12 @@
 
 Tiny<sup><sup>App</sup></sup> is a full stack web application build with Node and Express that allows users to shorten long URLs (like bit.ly)
 
+## Final Product
+
+!["Main Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Main%20Page.png?raw=true)
+!["Link Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Link%20Page.png?raw=true)
+!["Login Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Login%20Page.png?raw=true)
+
 ## Dependencies
 
 - bcrypt 2.0.0
@@ -16,4 +22,5 @@ Tiny<sup><sup>App</sup></sup> is a full stack web application build with Node an
 ## Getting Started
 
 - Install all dependencies (using `npm install` after cloning this repo)
+- Create a file called .env, and store a variable called `COOKIESALT`. This can be whatever you want it to be, but must exist
 - Run the development server using `npm start` (assuming you don't edit the start script in package.json)
