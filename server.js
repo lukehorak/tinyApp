@@ -99,6 +99,7 @@ app.get("/u/:shortURL", (req, res) => {
   if (!req.session.visitor_id){
     req.session.visitor_id = appTools.generateUniqueId(allVisitors, 8);
   }
+  // TODO - helper function?
   let visitorID = req.session.visitor_id;
   // Check if visitor exists, if not create an ID and record it
   if (!allVisitors[visitorID]){
@@ -106,9 +107,8 @@ app.get("/u/:shortURL", (req, res) => {
   }
   if (!urlDatabase[short].visitors.includes(visitorID)){
     urlDatabase[short].visitors.push(visitorID)
-    console.log(urlDatabase[short].visitors)
   }
-  urlDatabase[short].clicks.push(new Date);
+  urlDatabase[short].clicks.push({visitor: visitorID, timestamp: new Date()});
   res.redirect(longURL);
 })
 

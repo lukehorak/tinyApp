@@ -25,14 +25,16 @@
     <table class="table table-bordered table-hover table-sm" style="text-align:center">
       <thead class="table-dark">
         <tr>
-          <th scope="col" > Clicks! </th>
+          <th scope="col" > UserID </th>
+          <th scope="col" > Timestamp </th>
         </tr>
       </thead>
       <tbody>
         <%for (let click of clicks){%>
 
         <tr>
-          <td><%=click%></td>
+          <td><%=click.visitor%></td>
+          <td><%=click.timestamp%></td>
         </tr>
 
         <%}%>
