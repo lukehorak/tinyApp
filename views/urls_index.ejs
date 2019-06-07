@@ -10,21 +10,29 @@
   <table class="table table-bordered table-hover">
     <th style="text-align:center" scope="col">URL</th>
     <th style="text-align:center" scope="col">ShortURL</th>
+    <th style="text-align:center" scope="col">Clicks</th>
+    <th style="text-align:center" scope="col">Unique Clicks</th>
     <th style="text-align:center" scope="col">Edit</th>
     <th style="text-align:center" scope="col">Delete</th>
     <% for (url in urls) { %>
     <tr>
       <td>
-        <a href="<%= urls[url] %>"><%= urls[url] %></a>
+        <a href="<%= urls[url].longURL %>"><%= urls[url].longURL %></a>
       </td>
       <td>
         <a href="../u/<%=url%>"><%=hostURL + url %></a>
       </td>
       <td style="text-align:center">
-        <a class="btn btn-secondary" href="/urls/<%=url%>">Edit</a>
+        <p><%= urls[url].clicks.length %></p>
       </td>
       <td style="text-align:center">
-        <form method="POST" action="/urls/<%=url%>/delete">
+        <p><%= urls[url].visitors.length %></p>
+      </td>
+      <td style="text-align:center">
+        <a class="btn btn-secondary" href="/urls/<%=url%>?_method=PUT">Edit</a>
+      </td>
+      <td style="text-align:center">
+        <form method="POST" action="/urls/<%=url%>?_method=DELETE">
           <button type="submit" class="btn btn-danger">X</button>
         </form>
       </td>
