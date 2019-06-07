@@ -3,9 +3,11 @@
 Tiny<sup><sup>App</sup></sup> is a full stack web application build with Node and Express that allows users to shorten long URLs (like bit.ly)
 
 ## Final Product
-
+Main Page
 !["Main Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Main%20Page.png?raw=true)
+Individual Link Page
 !["Link Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Link%20Page.png?raw=true)
+Login Page
 !["Login Page"](https://github.com/lukehorak/tinyApp/blob/master/docs/Login%20Page.png?raw=true)
 
 ## Dependencies
