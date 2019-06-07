@@ -14,18 +14,18 @@
     <table class="table table-bordered table-hover">
       <tr>
         <td>
-          <a href=<%= long %>><%= long %></a>
+          <a href="<%= long %>"><%= long %></a>
         </td>
         <td>
-          <a href=../<%short%>><%=fullTiny%></a>
+          <a href="../<%=short%>"><%=hostURL + short%></a>
         </td>
       </tr>
     </table>
 
-    <form class="form-inline" method="POST" action=<%=`/urls/${short}`%>>
+    <form class="form-inline" method="POST" action="/urls/<%=short%>">
       <div class="form-group mb-2">
         <label for="longURL">Modify the URL:</label>
-        <input class="form-control" type="text" value=<%=long%> name="longURL" placeholder="http://something.com" style="width: 300px; margin: 1em">
+        <input class="form-control" type="text" name="longURL" placeholder="http://something.com" style="width: 300px; margin: 1em" value=<%= long %>>
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>
     </form>

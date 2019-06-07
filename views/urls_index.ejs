@@ -15,16 +15,16 @@
     <% for (url in urls) { %>
     <tr>
       <td>
-        <a href=<%= urls[url] %>><%= urls[url] %></a>
+        <a href="<%= urls[url] %>"><%= urls[url] %></a>
       </td>
       <td>
-        <a href=<%=`../u/${url}`%>><%=hostURL + url %></a>
+        <a href="../u/<%=url%>"><%=hostURL + url %></a>
       </td>
       <td style="text-align:center">
-        <a class="btn btn-secondary" href=<%=`/urls/${url}`%>>Edit</a>
+        <a class="btn btn-secondary" href="/urls/<%=url%>">Edit</a>
       </td>
       <td style="text-align:center">
-        <form method="POST" action=<%=`/urls/${url}/delete`%>>
+        <form method="POST" action="/urls/<%=url%>/delete">
           <button type="submit" class="btn btn-danger">X</button>
         </form>
       </td>
