@@ -1,0 +1,15 @@
+.body{
+  font-size: 20px;
+  padding: 50px;
+  background-color: #EEEEEE
+}
+
+.footer-text{
+  font-size:0.7em;
+  text-align:center
+}
+
+.credential-form{
+  width:50%;
+  margin:1em auto;
+}

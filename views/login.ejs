@@ -3,12 +3,12 @@
 
 <% include ./partials/_head%>
 
-<body style="font-size:20px; padding:50px; background-color:#BEB7A4">
+<body class="body">
   <h2 style="text-align:center; font-weight:bold"><i style="color:#007bff" class="fa fa-user"></i> Log In</h2>
   <%if(error){%>
     <% include ./partials/_loginFail%>
   <% } %>
-  <div style="width:50%; margin:1em auto;">
+  <div class="credential-form">
     <form class="form" action="/login" method="POST">
       <div class="form-group mb-2">
         <label for="email">Username (Email):</label>
@@ -20,7 +20,7 @@
         <button type="submit" class="btn btn-primary">Log In</button>
       </div>
     </form>
-    <p style="font-size:0.5em; text-align:center">Don't have an account? <a href="/register">Register here!</a></p>
+    <p class="footer-text">Don't have an account? <a href="/register">Register here!</a></p>
   </div>
 </body>
 
