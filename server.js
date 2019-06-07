@@ -1,10 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session")
 const dotenv = require('dotenv');
 const bcrypt = require("bcrypt");
 const appTools = require("./tinyAppTools");
+const methodOverride = require("method-override");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Configs
@@ -18,6 +18,7 @@ if (dotenvConfig.error){
   throw dotenvConfig.error
 }
 
+app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieSession({
   name: 'session',
@@ -28,9 +29,11 @@ app.set("view engine", "ejs");
 app.use(express.static('public'));
 
 const urlDatabase = {
-  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "v4b3"},
-  "9sm5xK": {longURL: "http://www.google.com", userID: "v4b3"}
+  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "v4b3", visitors: [], clicks: []},
+  "9sm5xK": {longURL: "http://www.google.com", userID: "v4b3", visitors: [], clicks: []}
 };
+
+const allVisitors = {};
 
 const users = {
   "v4b3": {
@@ -69,14 +72,17 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const user_id = req.session.user_id;
-  const urlObj = urlDatabase[req.params.shortURL];
+  const short = req.params.shortURL;
+  const urlObj = urlDatabase[short];
   const validURL = (user_id === urlObj.userID)
   let templateVars = {
-    short: req.params.shortURL,
-    long: urlDatabase[req.params.shortURL].longURL,
+    short: short,
+    long: urlDatabase[short].longURL,
     hostURL: `http://${req.hostname}/u/`,
     user: users[user_id],
-    valid: validURL
+    valid: validURL,
+    clicks: urlDatabase[short].clicks,
+    uniqueVisits: urlDatabase[short].visitors.length
   };
   res.render("urls_show", templateVars)
 });
@@ -86,7 +92,23 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
+  const short = req.params.shortURL;
+  // if shortURL undefined, throw 404
+  const longURL = urlDatabase[short].longURL;
+  // Set visitorID va, generating cookie first if needed
+  if (!req.session.visitor_id){
+    req.session.visitor_id = appTools.generateUniqueId(allVisitors, 8);
+  }
+  let visitorID = req.session.visitor_id;
+  // Check if visitor exists, if not create an ID and record it
+  if (!allVisitors[visitorID]){
+    allVisitors[visitorID] = { id: visitorID }
+  }
+  if (!urlDatabase[short].visitors.includes(visitorID)){
+    urlDatabase[short].visitors.push(visitorID)
+    console.log(urlDatabase[short].visitors)
+  }
+  urlDatabase[short].clicks.push(new Date);
   res.redirect(longURL);
 })
 
@@ -105,29 +127,8 @@ app.get("/login", (req, res) => {
 app.post("/urls", (req,res) => {
   const short = appTools.generateUniqueId(urlDatabase,6);
   const long = appTools.confirmHTTPS(req.body.longURL);
-  urlDatabase[short] = { longURL: long, userID: req.session.user_id };
+  urlDatabase[short] = { longURL: long, userID: req.session.user_id, visitors: [], clicks: [] };
   res.redirect(`/urls/${short}`)
-})
-
-app.post("/urls/:shortURL/delete", (req,res) => {
-  if (appTools.validateUser(req, urlDatabase)){
-    delete urlDatabase[req.params.shortURL];
-    res.redirect('/')
-  }
-  res.sendStatus(401);
-  
-})
-
-app.post("/urls/:shortURL", (req,res) => {
-  if (appTools.validateUser(req, urlDatabase)){
-    // const re = ('^http[s]?://');
-    // let long = req.body.longURL;
-    // long = (long.search(re) > -1 ? long : `http://${long}`);
-    const long = appTools.confirmHTTPS(req.body.longURL)
-    urlDatabase[req.params.shortURL] = { longURL: long, userID: req.session.user_id }
-    res.redirect('/')
-  }
-  res.sendStatus(401)
 })
 
 app.post("/login", (req, res) => {
@@ -159,6 +160,41 @@ app.post("/register", (req, res) => {
   req.session["user_id"] = id;
   res.redirect("/");
  
+})
+
+////////////////////
+// PUT
+////////////////////
+
+app.put("/urls/:shortURL", (req,res) => {
+  const short = req.params.shortURL;
+  if(!appTools.getResource(urlDatabase, short)){
+    res.statusMessage = `Resource ${short} does not exist!`;
+    res.sendStatus(400)
+  }
+  if (appTools.validateUser(req, urlDatabase)){
+    const long = appTools.confirmHTTPS(req.body.longURL)
+    urlDatabase[short] = { longURL: long, userID: req.session.user_id, visitors: [], clicks: []}
+    res.redirect('/')
+  }
+  res.sendStatus(401)
+})
+
+////////////////////
+// DELETE
+////////////////////
+
+app.delete("/urls/:shortURL", (req, res) => {
+  const short = req.params.shortURL;
+  if(!appTools.getResource(urlDatabase, short)){
+    res.statusMessage = `Resource ${short} does not exist!`;
+    res.sendStatus(400)
+  }
+  if (appTools.validateUser(req, urlDatabase)){
+    delete urlDatabase[short];
+    res.redirect('/')
+  }
+  res.sendStatus(401);
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
