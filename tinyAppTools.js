@@ -31,7 +31,7 @@ module.exports = {
     const urls = {}
     for(let i in resource){
       if (resource[i].userID === id){
-        urls[i] = resource[i].longURL;
+        urls[i] = resource[i];
       }
     }
     return (urls === {} > 0 ? undefined : urls)
@@ -45,5 +45,9 @@ module.exports = {
   confirmHTTPS: function(url){
     const re = ('^http[s]?://');
     return (url.search(re) > -1 ? url : `http://${url}`);
+  },
+  // Simple getter function, to be overridden should this be refactored with a DB
+  getResource: function(data, id){
+    return data[id];
   }
 }
