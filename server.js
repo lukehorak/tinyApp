@@ -136,6 +136,7 @@ app.post("/urls", (req,res) => {
 app.post("/login", (req, res) => {
   const{ email, password } = req.body;
   const userId = appTools.propertyTakenBy("email", users, email);
+  //console.log("email: ", email);
   if(!userId || !bcrypt.compareSync(password, users[userId].password)){
     res.status(403).render("login", {error: "Invalid username or password, please try again!"});
   }
@@ -150,7 +151,11 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password || appTools.propertyTakenBy("email", users, email)){
+  if (!email || !password){
+    const errorMessage = appTools.errorMessageBuilder(email, password);
+    res.status(400).render("register", { error:errorMessage});
+  }
+  else if (appTools.propertyTakenBy("email", users, email)){
     res.status(400).render("register", { error: "That email is already associated with an account. Try another one!" });
   }
   const id = appTools.generateUniqueId(users, 8)

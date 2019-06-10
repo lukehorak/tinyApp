@@ -49,5 +49,15 @@ module.exports = {
   // Simple getter function, to be overridden should this be refactored with a DB
   getResource: function(data, id){
     return data[id];
+  },
+  errorMessageBuilder: function(email, password){
+    let errorMessage = "Oops! We were unable to register you due to the following:";
+    if (!email) {
+      errorMessage += " No email was provided;";
+    }
+    if(!password) {
+      errorMessage += " No password was provided;"
+    }
+    return errorMessage.trim();
   }
 }
